@@ -42,7 +42,7 @@ The plot below shows performance as the number of cores increases using:
 
     drwmutex -i 5000 -p 0.0001 -w 1 -r 100 -c 100
 
-![DRWMutex and sync.RWMutex performance comparison](./perf.png)
+![DRWMutex and sync.RWMutex performance comparison](https://cdn.rawgit.com/jonhoo/05774c1e47dbe4d57169/raw/37c2694c16587de2dd11daed8bf42fc98a2a9080/perf.png)
 
 Note the drops every 10th core; this is because 10 cores constitute a
 NUMA node on the machine the benchmarks were run on, so once a NUMA node
