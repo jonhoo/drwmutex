@@ -17,6 +17,8 @@ func cpu() uint64 // implemented in cpu_amd64.s
 
 var cpus map[uint64]int
 
+// determine mapping from APIC ID to CPU index by pinning the entire process to
+// one core at the time, and seeing that its APIC ID is.
 func init() {
 	cpus = make(map[uint64]int)
 
