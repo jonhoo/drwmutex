@@ -38,7 +38,8 @@ lock is held for). Even on few cores, DRWMutex outperforms sync.RWMutex
 under these conditions, which are common for applications that elect to
 use sync.RWMutex over sync.Mutex.
 
-The plot below shows performance as the number of cores increases using:
+The plot below shows mean performance across 10 runs as the number of
+cores increases using:
 
     drwmutex -i 5000 -p 0.0001 -w 1 -r 100 -c 100
 
@@ -50,3 +51,7 @@ NUMA node on the machine the benchmarks were run on, so once a NUMA node
 is added, cross-core traffic becomes more expensive. Performance
 increases for DRWMutex as more readers can work in parallel compared to
 sync.RWMutex.
+
+See the [go-nuts
+thread](https://groups.google.com/d/msg/golang-nuts/zt_CQssHw4M/TteNG44geaEJ)
+for further discussion.
