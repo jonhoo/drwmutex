@@ -1,3 +1,5 @@
+# Distributed Read-Write Mutex in Go
+
 The default Go implementation of
 [sync.RWMutex](https://golang.org/pkg/sync/#RWMutex) does not scale well
 to multiple cores, as all readers contend on the same memory location
@@ -6,23 +8,32 @@ when they all try to atomically increment it. This gist explores an
 CPU core its own RWMutex. Readers take only a read lock local to their
 core, whereas writers must take all locks in order.
 
-To determine which lock to take, readers use the Intel CPUID
-instruction, which gives the APICID of the currently active CPU without
-having to issue a system call or modify the runtime. A mapping from
-APICID to CPU index is constructed (using CPU affinity syscalls) when
-the program is started, as it is static for the lifetime of a process.
-Since the CPUID instruction can be fairly expensive, goroutines will
-also only periodically update their estimate of what core they are
-running on. More frequent updates lead to less inter-core lock traffic,
-but also increases the time spent on CPUID instructions relative to the
-actual locking.
+## Finding the current CPU
 
+To determine which lock to take, readers use the CPUID instruction,
+which gives the APICID of the currently active CPU without having to
+issue a system call or modify the runtime. This instruction is supported
+on both Intel and AMD processors; ARM CPUs should use the [CPU ID
+register](http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0360e/CACEDHJG.html)
+instead. For systems with more than 256 processors, x2APIC must be used,
+and the EDX register after CPUID with EAX=0xb should be used instead. A
+mapping from APICID to CPU index is constructed (using CPU affinity
+syscalls) when the program is started, as it is static for the lifetime
+of a process.  Since the CPUID instruction can be fairly expensive,
+goroutines will also only periodically update their estimate of what
+core they are running on.  More frequent updates lead to less inter-core
+lock traffic, but also increases the time spent on CPUID instructions
+relative to the actual locking.
+
+**Stale CPU information.**
 The information of which CPU a goroutine is running on *might* be stale
 when we take the lock (the goroutine could have been moved to another
 core), but this will only affect performance, not correctness, as long
 as the reader remembers which lock it took. Such moves are also
 unlikely, as the OS kernel tries to keep threads on the same core to
 improve cache hits.
+
+## Performance
 
 There are many parameters that affect the performance characteristics of
 this scheme. In particular, the frequency of CPUID checking, the number
