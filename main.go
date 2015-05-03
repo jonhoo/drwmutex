@@ -43,7 +43,6 @@ Outer:
 		}
 
 		// what CPU do we have?
-		<-time.After(1 * time.Millisecond)
 		c := cpu()
 
 		if oldn, ok := cpus[c]; ok {
