@@ -49,7 +49,8 @@ lock is held for). Even on few cores, DRWMutex outperforms sync.RWMutex
 under these conditions, which are common for applications that elect to
 use sync.RWMutex over sync.Mutex.
 
-The plot below shows mean performance across 30 runs as the number of
+The plot below shows mean performance across 30 runs (using
+[experiment](https://github.com/jonhoo/experiment)) as the number of
 cores increases using:
 
     drwmutex-bench -i 5000 -p 0.0001 -w 1 -r 100 -c 100
