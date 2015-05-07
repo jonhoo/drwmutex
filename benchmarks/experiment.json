@@ -1,0 +1,38 @@
+{
+	"experiment": "Distributed RWMutex",
+	"repository": "~/dev/minor/drwmutex",
+	"checkout": "master",
+	"into": "src/drwmutex",
+	"iterations": 30,
+	"parallelism": 1,
+	"keep-stdout": true,
+	"build": "env GOPATH=$(pwd) $GO get drwmutex/...",
+	"versions": {
+		"c$cores-p$wprob-n$readers-r$rwork-c$cpu": {
+			"arguments": [
+				"$SRC/src/drwmutex/benchmarks/bench.sh",
+				"$cores",
+				"$SRC/bin/drwmutex-bench",
+				"-i",
+				"5000",
+				"-p",
+				"$wprob",
+				"-n",
+				"$readers",
+				"-w",
+				"1",
+				"-r",
+				"$rwork",
+				"-c",
+				"$cpu"
+			],
+			"vary": {
+				"cores": "range(1, 41, 1)",
+				"wprob": "set(0.0001)",
+				"readers": "set(500)",
+				"rwork": "set(100)",
+				"cpu": "set(100)"
+			}
+		}
+	}
+}
