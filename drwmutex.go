@@ -78,3 +78,9 @@ func (mx DRWMutex) Unlock() {
 func (mx DRWMutex) RLocker() sync.Locker {
 	return mx[cpus[cpu()]].RLocker()
 }
+
+func (mx DRWMutex) RLock() (l sync.Locker) {
+	l = mx[cpus[cpu()]].RLocker()
+	l.Lock()
+	return
+}
