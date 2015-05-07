@@ -3,8 +3,8 @@
 The default Go implementation of
 [sync.RWMutex](https://golang.org/pkg/sync/#RWMutex) does not scale well
 to multiple cores, as all readers contend on the same memory location
-when they all try to atomically increment it. This gist explores an
-`n`-way RWMutex, also known as a "big reader" lock, which gives each
+when they all try to atomically increment it. This repository provides
+an `n`-way RWMutex, also known as a "big reader" lock, which gives each
 CPU core its own RWMutex. Readers take only a read lock local to their
 core, whereas writers must take all locks in order.
 
@@ -49,12 +49,12 @@ lock is held for). Even on few cores, DRWMutex outperforms sync.RWMutex
 under these conditions, which are common for applications that elect to
 use sync.RWMutex over sync.Mutex.
 
-The plot below shows mean performance across 10 runs as the number of
+The plot below shows mean performance across 30 runs as the number of
 cores increases using:
 
     drwmutex-bench -i 5000 -p 0.0001 -w 1 -r 100 -c 100
 
-![DRWMutex and sync.RWMutex performance comparison](https://cdn.rawgit.com/jonhoo/05774c1e47dbe4d57169/raw/37c2694c16587de2dd11daed8bf42fc98a2a9080/perf.png)
+![DRWMutex and sync.RWMutex performance comparison](https://cdn.rawgit.com/jonhoo/drwmutex/cc5c71f8b88ca7acbc8413358ceed9e755d2b813/benchmarks/perf.png)
 
 Error bars denote 25th and 75th percentile.
 Note the drops every 10th core; this is because 10 cores constitute a
