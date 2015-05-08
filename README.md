@@ -8,6 +8,12 @@ an `n`-way RWMutex, also known as a "big reader" lock, which gives each
 CPU core its own RWMutex. Readers take only a read lock local to their
 core, whereas writers must take all locks in order.
 
+**Note that the current implementation only supports x86 processors on
+Linux. To support other architectures and OSes, the appropriate
+`cpu_GOARCH.go` and `cpus_GOOS.go` files need to be written. If you have
+a different setup available, and have the time to write one of these,
+I'll happily accept patches.**
+
 ## Finding the current CPU
 
 To determine which lock to take, readers use the CPUID instruction,
