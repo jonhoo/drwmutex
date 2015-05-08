@@ -60,7 +60,7 @@ The plot below shows mean performance across 30 runs (using
 [experiment](https://github.com/jonhoo/experiment)) as the number of
 cores increases using:
 
-    drwmutex-bench -i 5000 -p 0.0001 -w 1 -r 100 -c 100
+    drwmutex-bench -i 5000 -p 0.0001 -n 500 -w 1 -r 100 -c 100
 
 ![DRWMutex and sync.RWMutex performance comparison](https://cdn.rawgit.com/jonhoo/drwmutex/cc5c71f8b88ca7acbc8413358ceed9e755d2b813/benchmarks/perf.png)
 
