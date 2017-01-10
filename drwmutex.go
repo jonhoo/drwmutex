@@ -26,7 +26,7 @@ type DRWMutex []sync.RWMutex
 
 // New returns a new, unlocked, distributed RWMutex.
 func New() DRWMutex {
-	return make(DRWMutex, runtime.GOMAXPROCS(0))
+	return make(DRWMutex, len(cpus))
 }
 
 // Lock takes out an exclusive writer lock similar to sync.Mutex.Lock.
