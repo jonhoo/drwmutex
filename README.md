@@ -62,7 +62,7 @@ cores increases using:
 
     drwmutex-bench -i 5000 -p 0.0001 -n 500 -w 1 -r 100 -c 100
 
-![DRWMutex and sync.RWMutex performance comparison](https://cdn.rawgit.com/jonhoo/drwmutex/cc5c71f8b88ca7acbc8413358ceed9e755d2b813/benchmarks/perf.png)
+![DRWMutex and sync.RWMutex performance comparison](benchmarks/perf.png)
 
 Error bars denote 25th and 75th percentile.
 Note the drops every 10th core; this is because 10 cores constitute a
