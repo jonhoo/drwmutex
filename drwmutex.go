@@ -22,7 +22,12 @@ func init() {
 	fmt.Fprintf(os.Stderr, "%d/%d cpus found in %v: %v\n", len(cpus), runtime.NumCPU(), time.Now().Sub(start), cpus)
 }
 
-type DRWMutex []sync.RWMutex
+type paddedRWMutex struct {
+	_  [8]uint64 // Pad by cache-line size to prevent false sharing.
+	mu sync.RWMutex
+}
+
+type DRWMutex []paddedRWMutex
 
 // New returns a new, unlocked, distributed RWMutex.
 func New() DRWMutex {
@@ -33,14 +38,14 @@ func New() DRWMutex {
 // A writer lock also excludes all readers.
 func (mx DRWMutex) Lock() {
 	for core := range mx {
-		mx[core].Lock()
+		mx[core].mu.Lock()
 	}
 }
 
 // Unlock releases an exclusive writer lock similar to sync.Mutex.Unlock.
 func (mx DRWMutex) Unlock() {
 	for core := range mx {
-		mx[core].Unlock()
+		mx[core].mu.Unlock()
 	}
 }
 
@@ -49,13 +54,13 @@ func (mx DRWMutex) Unlock() {
 // relatively slow, depending on the underlying system architechture, and so
 // its result should be cached if possible.
 func (mx DRWMutex) RLocker() sync.Locker {
-	return mx[cpus[cpu()]].RLocker()
+	return mx[cpus[cpu()]].mu.RLocker()
 }
 
 // RLock takes out a non-exclusive reader lock, and returns the lock that was
 // taken so that it can later be released.
 func (mx DRWMutex) RLock() (l sync.Locker) {
-	l = mx[cpus[cpu()]].RLocker()
+	l = mx[cpus[cpu()]].mu.RLocker()
 	l.Lock()
 	return
 }
